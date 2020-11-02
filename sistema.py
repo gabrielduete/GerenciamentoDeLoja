@@ -28,7 +28,7 @@ totalServiços = 0
 global totalLucro    #lucro total obtido
 totalLucro = sum(lista_valores_servicos) #somar os valores da lista_valores_serviços
 
-global valor 
+global valor
 global data
 
 global lucroJaneiro 
@@ -101,20 +101,20 @@ def clientScreen():
 
     def client_button_save(): #janela para cadastrar um novo cliente
         name = str(client_name.get())
-        lista_nome_cliente.append(name)
         cpf = str(client_cpf.get())
-        lista_cpf_cliente.append(cpf)
         tel = str(client_tel.get())
-        lista_tel_cliente.append(tel)
-        email =str(client_email.get())
-        lista_email_cliente.append(email)
-        adress =str(client_adress.get())
-        lista_endereco_cliente.append(adress)
+        email = str(client_email.get())
+        adress = str(client_adress.get())
         if (name=='' or name==' ') or (cpf=='' or cpf==' ') or (tel=='' or tel==' ') or (email=='' or email==' ') or (adress=='' or adress==' '):
-            print('nao pode')
+            messagebox.showwarning("Erro no Cadastro","Não podem haver campos vazios.")
         else: 
             global totalClientes
-            totalClientes+=1
+            totalClientes += 1
+            lista_nome_cliente.append(name)
+            lista_cpf_cliente.append(cpf)
+            lista_tel_cliente.append(tel)
+            lista_email_cliente.append(email)
+            lista_endereco_cliente.append(adress)
             messagebox.showinfo("Cadastro Cliente","Cliente cadastrado com sucesso!")
             client_screen.destroy()
     clientSave_button = Button(client_screen, text="Salvar", width=12, bd=3, command=client_button_save, cursor="hand2").place(x=155,y=280)
@@ -227,7 +227,7 @@ def serviceScreen():
             except ValueError:
                 return False
             return True
-        if valor=='':
+        if valor == '':
             print('vazio')
         else:
             valor = float(valor)
@@ -237,7 +237,11 @@ def serviceScreen():
         if valor==None:
             print('vazio')
         print(valor,type(valor))
+
+        totalLucro = sum(lista_valores_servicos)       
         print(totalLucro)
+
+        print(lista_valores_servicos)
         service_screen.destroy()
             
     newService_bt = Button(service_screen, text="Salvar", width=8, command=salvarServiço).place(x=165,y=245)
@@ -257,33 +261,33 @@ def graficoLucros():
     global lucroAgosto
     global lucroSetembro
     global lucroOutubro
-    global lucroNovembro 
+    global lucroNovembro
     global lucroDezembro
     global meses
     global vendas
-    if "JANEIRO" in data:
+    if data[3] == '0' and data[4] == '1':
         lucroJaneiro += valor
-    elif "FEVEREIRO" in data:
+    elif data[3] == '0' and data[4] == '2':
         lucroFevereiro += valor
-    elif "MARÇO" in data:
+    elif data[3] == '0' and data[4] == '3':
         lucroMarço += valor
-    elif "ABRIL" in data:
+    elif data[3] == '0' and data[4] == '4':
         lucroAbril += valor
-    elif "MAIO" in data:
+    elif data[3] == '0' and data[4] == '5':
         lucroMaio += valor
-    elif "JUNHO" in data:
+    elif data[3] == '0' and data[4] == '6':
         lucroJunho += valor
-    elif "JULHO" in data:
+    elif data[3] == '0' and data[4] == '7':
         lucroJulho += valor
-    elif "AGOSTO" in data:
+    elif data[3] == '0' and data[4] == '8':
         lucroAgosto += valor
-    elif "SETEMBRO" in data:
+    elif data[3] == '0' and data[4] == '9':
         lucroSetembro += valor
-    elif "OUTUBRO" in data:
+    elif data[3] == '1' and data[4] == '0':
         lucroOutubro += valor
-    elif "NOVEMBRO" in data:
+    elif data[3] == '1' and data[4] == '1':
         lucroNovembro += valor
-    elif "DEZEMBRO" in data:
+    elif data[3] == '1' and data[4] == '2':
         lucroDezembro += valor
     meses = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO']
     vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
@@ -323,6 +327,11 @@ def limparGrafico():
     lucroDezembro = 0
     vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
     print(lucroJaneiro)
+    plt.title('Gráfico de ganhos do ano')
+    plt.xlabel('Meses')
+    plt.ylabel('Valores das vendas')
+    plt.barh(meses, vendas, color='blue')
+    plt.show()
  
 
 def menu(): #barra de menus, onde cada opção irá abrir uma janela

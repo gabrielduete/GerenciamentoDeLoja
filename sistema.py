@@ -320,16 +320,18 @@ def serviceScreen():
             print('vazio')
         else:
             valor = float(valor)
-        lista_valores_servicos.append(valor)
         data = str(client_data.get()).upper()
         lista_datas_servicos.append(data)
         if valor==None:
             print('vazio')
         print(valor,type(valor))
-
-        totalLucro = sum(lista_valores_servicos)       
+        if (data=='' or data==' ') or (valor=='' or valor==' ') or (analise == '' or analise == ' '):
+            messagebox.showwarning("Erro no Cadastro","Não podem haver campos vazios.")
+        else:
+            lista_valores_servicos.append(valor)
+            totalLucro = sum(lista_valores_servicos)       
+        
         print(totalLucro)
-
         print(lista_valores_servicos)
         service_screen.destroy()
     newService_bt = Button(service_screen, text="Salvar", width=8, bd=3, command=salvarServiço).place(x=165,y=295)
@@ -358,61 +360,8 @@ def infoScreen():
     ok = Button(info_screen, text="Ok", width=8, bd=3, command=ok_info).place(x=190, y=235)
 
     info_screen.mainloop()
-def graficoLucros():
-    global valor
-    global data
-    global lucroJaneiro 
-    global lucroFevereiro 
-    global lucroMarço 
-    global lucroAbril 
-    global lucroMaio
-    global lucroJunho
-    global lucroJulho 
-    global lucroAgosto
-    global lucroSetembro
-    global lucroOutubro
-    global lucroNovembro
-    global lucroDezembro
-    global meses
-    global vendas
-    if data == '':
-        messagebox.showwarning("Erro!", "Nenhum mês foi cadastrado!")
-    else:
-        if data[3] == '0' and data[4] == '1':
-            lucroJaneiro += valor
-        elif data[3] == '0' and data[4] == '2':
-            lucroFevereiro += valor
-        elif data[3] == '0' and data[4] == '3':
-            lucroMarço += valor
-        elif data[3] == '0' and data[4] == '4':
-            lucroAbril += valor
-        elif data[3] == '0' and data[4] == '5':
-            lucroMaio += valor
-        elif data[3] == '0' and data[4] == '6':
-            lucroJunho += valor
-        elif data[3] == '0' and data[4] == '7':
-            lucroJulho += valor
-        elif data[3] == '0' and data[4] == '8':
-            lucroAgosto += valor
-        elif data[3] == '0' and data[4] == '9':
-            lucroSetembro += valor
-        elif data[3] == '1' and data[4] == '0':
-            lucroOutubro += valor
-        elif data[3] == '1' and data[4] == '1':
-            lucroNovembro += valor
-        elif data[3] == '1' and data[4] == '2':
-            lucroDezembro += valor
-        else:
-            messagebox.showwarning("Atenção!", "Nenhum mês foi cadastrado!")
-        meses = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO']
-        vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
-        print(lucroJaneiro)
-        plt.title('Gráfico de ganhos do ano')
-        plt.xlabel('Meses')
-        plt.ylabel('Valores das vendas')
-        plt.barh(meses, vendas, color='blue')
-        plt.show()
-def limparGrafico():
+
+def limparGrafico():    
     global lucroJaneiro 
     global lucroFevereiro 
     global lucroMarço 
@@ -439,8 +388,60 @@ def limparGrafico():
     lucroOutubro = 0
     lucroNovembro = 0
     lucroDezembro = 0
-    vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
+    vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]   
 
+def graficoLucros():
+    global valor
+    global data
+    global lucroJaneiro 
+    global lucroFevereiro 
+    global lucroMarço 
+    global lucroAbril 
+    global lucroMaio
+    global lucroJunho
+    global lucroJulho 
+    global lucroAgosto
+    global lucroSetembro
+    global lucroOutubro
+    global lucroNovembro
+    global lucroDezembro
+    global meses
+    global vendas
+    if data == '' or data[3] != 0 or data[3] != 1:
+        messagebox.showwarning("Erro!", "Nenhum mês foi cadastrado!")
+    else:
+        if data[3] == '0' and data[4] == '1':
+            lucroJaneiro += valor
+        if data[3] == '0' and data[4] == '2':
+            lucroFevereiro += valor
+        if data[3] == '0' and data[4] == '3':
+            lucroMarço += valor
+        if data[3] == '0' and data[4] == '4':
+            lucroAbril += valor
+        if data[3] == '0' and data[4] == '5':
+            lucroMaio += valor
+        if data[3] == '0' and data[4] == '6':
+            lucroJunho += valor
+        if data[3] == '0' and data[4] == '7':
+            lucroJulho += valor
+        if data[3] == '0' and data[4] == '8':
+            lucroAgosto += valor
+        if data[3] == '0' and data[4] == '9':
+            lucroSetembro += valor
+        if data[3] == '1' and data[4] == '0':
+            lucroOutubro += valor
+        if data[3] == '1' and data[4] == '1':
+            lucroNovembro += valor
+        if data[3] == '1' and data[4] == '2':
+            lucroDezembro += valor
+        valor = 0
+        meses = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO']
+        vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
+        plt.title('Gráfico de ganhos do ano')
+        plt.xlabel('Meses')
+        plt.ylabel('Valores das vendas')
+        plt.barh(meses, vendas, color='blue')
+        plt.show()
 def menu(): #barra de menus, onde cada opção irá abrir uma janela
     menubar = Menu(main_screen) 
     clientes = Menu(menubar, tearoff = 0) 
@@ -467,7 +468,5 @@ def menu(): #barra de menus, onde cada opção irá abrir uma janela
     
     main_screen.config(menu = menubar) 
 menu()
-
-
 
 main_screen.mainloop()

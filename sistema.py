@@ -16,7 +16,7 @@ y_main_screen=(main_screen_screen_height/2) - (height_main_screen/2)
 main_screen.geometry('%dx%d+%d+%d'%(width_main_screen,height_main_screen,x_main_screen,y_main_screen-40))
 ##################Listas e variáveis que armazenam as informações do cliente/serviços/lucros e etc...##############################
 lista_nome_cliente, lista_cpf_cliente, lista_tel_cliente, lista_email_cliente, lista_endereco_cliente = [],[],[],[],[]
-lista_valores_servicos, lista_datas_servicos = [],[]
+lista_valores_servicos, lista_datas_servicos, lista_descricao_servico = [],[],[]
 lista_servicos_pendentes, lista_servicos_concluidos = [],[]
 global totalClientes, totalServicosPendentes, totalServicosConcluidos   #total de clientes cadastrados, serviços pendentes e concluidos
 totalClientes, totalServicosPendentes, totalServicosConcluidos = 0,0,0
@@ -50,24 +50,25 @@ def clientScreen(): #janela para cadastrar um novo cliente
     client_screen_screen_height = client_screen.winfo_screenheight()
     width_client_screen=400
     height_client_screen=320
+    client_screen['bg']='white'
     x_client_screen=(client_screen_screen_width/2) - (width_client_screen/2)
     y_client_screen=(client_screen_screen_height/2) - (height_client_screen/2)
     client_screen.geometry('%dx%d+%d+%d'%(width_client_screen,height_client_screen,x_client_screen,y_client_screen-40))
-    cadastroCliente_label = Label(client_screen, text="Cadastrar Cliente", font="Arial 18").place(x=105,y=10)
-    name_label = Label(client_screen, text="Nome:", font="Arial").place(x=38,y=46)
+    cadastroCliente_label = Label(client_screen, text="Cadastrar Cliente", font="Arial 18", bg='white').place(x=105,y=10)
+    name_label = Label(client_screen, text="Nome:", font="Arial", bg='white').place(x=38,y=46)
     client_name = Entry(client_screen, font="Arial", bd=4, width=35)  #nome do cliente
     client_name.place(x=38,y=70)
     client_name.focus()
-    cpf_label = Label(client_screen, text="Cpf:", font="Arial").place(x=38,y=101)
+    cpf_label = Label(client_screen, text="Cpf:", font="Arial", bg='white').place(x=38,y=101)
     client_cpf = Entry(client_screen, font="Arial", bd=4, width=16)  #cpf do cliente
     client_cpf.place(x=38,y=125)
-    tel_label = Label(client_screen, text="Telefone:", font="Arial").place(x=210,y=101)
+    tel_label = Label(client_screen, text="Telefone:", font="Arial", bg='white').place(x=210,y=101)
     client_tel = Entry(client_screen, font="Arial", bd=4, width=16)  #telefone do cliente
     client_tel.place(x=210,y=125)
-    email_label = Label(client_screen, text="Email:", font="Arial").place(x=38,y=156)
+    email_label = Label(client_screen, text="Email:", font="Arial", bg='white').place(x=38,y=156)
     client_email = Entry(client_screen, font="Arial", bd=4, width=35) #email do cliente
     client_email.place(x=38,y=180)
-    adress_label = Label(client_screen, text="Endereço: (Rua/N°/Bairro)", font="Arial").place(x=38,y=211)
+    adress_label = Label(client_screen, text="Endereço: (Rua/N°/Bairro)", font="Arial", bg='white').place(x=38,y=211)
     client_adress = Entry(client_screen, font="Arial", bd=4, width=35) #endereço do cliente
     client_adress.place(x=38,y=235)
     def client_button_save(): #janela para cadastrar um novo cliente
@@ -77,6 +78,8 @@ def clientScreen(): #janela para cadastrar um novo cliente
         email = str(client_email.get())
         adress = str(client_adress.get())
         if (name=='' or name==' ') or (cpf=='' or cpf==' ') or (tel=='' or tel==' ') or (email=='' or email==' ') or (adress=='' or adress==' '):
+            client_screen.focus_force()
+            client_screen.grab_set()
             messagebox.showwarning("Erro no Cadastro","Não podem haver campos vazios.")
         else: 
             global totalClientes
@@ -89,11 +92,11 @@ def clientScreen(): #janela para cadastrar um novo cliente
             client_screen.destroy()
             messagebox.showinfo("Cadastro Cliente","Cliente cadastrado com sucesso!")
             totCl["text"] = totalClientes
-    clientSave_button = Button(client_screen, text="Salvar", width=12, bd=3, command=client_button_save, cursor="hand2").place(x=155,y=280)
+    clientSave_button = Button(client_screen, text="Salvar", width=12, bd=3, command=client_button_save, cursor="hand2").place(x=152,y=280)
     client_screen.mainloop()
-def lista_clientes(): #janela que exibe uma lista com todos os clientes cadastrados
+def listaClientScreen(): #janela que exibe uma lista com todos os clientes cadastrados
     global totalClientes
-    if totalClientes == 0:
+    if totalClientes==0:
         messagebox.showwarning("Erro ao acessar!",'Não tem nenhum cliente cadastrado!')
     else:
         client_list=Toplevel()
@@ -103,29 +106,22 @@ def lista_clientes(): #janela que exibe uma lista com todos os clientes cadastra
         client_list_screen_height = client_list.winfo_screenheight()
         width_client_list=336
         height_client_list=415
-        client_list['bg'] = '#6763fd'
+        client_list['bg'] = 'white'
         x_client_list=(client_list_screen_width/2) - (width_client_list/2)
         y_client_list=(client_list_screen_height/2) - (height_client_list/2)
         client_list.geometry('%dx%d+%d+%d'%(width_client_list,height_client_list,x_client_list,y_client_list-40))
-        cadListClient = Label(client_list, text="Clientes Cadastrados", font="Arial 18", bg='#6763fd', fg='white').place(x=48,y=10)
+        cadListClient = Label(client_list, text="Clientes Cadastrados", font="Arial 18", bg='white').place(x=48,y=10)
         scrollbar = Scrollbar(client_list)
         scrollbar.pack(side=RIGHT, fill=Y)
-        listaClientes = Listbox(client_list, font="Arial 15", height=13, width=25, cursor='hand2')
+        listaClientes = Listbox(client_list, font="Arial 14", height=13, width=25, cursor='hand2')
         listaClientes.place(x=20,y=55)
         for cliente_add in lista_nome_cliente:
             listaClientes.insert(END, cliente_add)
             listaClientes.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=listaClientes.yview)
-        
         def ok_client_list_button():
             client_list.destroy()
-        ok_client_list = Button(client_list, text='Ok', width=6, command=ok_client_list_button, cursor="hand2").place(x=248,y=380)
-
-        def deletarServico():
-            deletar = messagebox.askyesno('Confirme','Deseja deletar esse serviço?')
-            if deletar == True:
-                listaClientes.delete(ACTIVE)
-                print(lista_nome_cliente,listaClientes)
+        ok_client_list = Button(client_list, text='Ok', width=10, command=ok_client_list_button, cursor="hand2").place(x=218,y=380)    
         def verInfo_button(): #janela que exibe as informações do cliente selecionado
             info_client=Toplevel()
             info_client.title('Sistema Assistência Técnica')
@@ -134,11 +130,11 @@ def lista_clientes(): #janela que exibe uma lista com todos os clientes cadastra
             info_client_screen_height = info_client.winfo_screenheight()
             width_info_client=380
             height_info_client=234
-            info_client['bg'] = '#6763fd'
+            info_client['bg'] = 'white'
             x_info_client=(info_client_screen_width/2) - (width_info_client/2)
             y_info_client=(info_client_screen_height/2) - (height_info_client/2)
             info_client.geometry('%dx%d+%d+%d'%(width_info_client,height_info_client,x_info_client,y_info_client-40))
-            infoLabel = Label(info_client, text="Informações do Cliente", font="Arial 18", bg='#6763fd', fg='white').place(x=62,y=10)
+            infoLabel = Label(info_client, text="Informações do Cliente", font="Arial 18", bg='white', fg='black').place(x=62,y=10)
             indice = listaClientes.curselection()[0]
             indiceNome = lista_nome_cliente[indice]
             indiceCPF = lista_cpf_cliente[indice]
@@ -162,10 +158,29 @@ def lista_clientes(): #janela que exibe uma lista com todos os clientes cadastra
             client_adress = Entry(info_client, textvariable=adress, font="Arial", bd=4, width=35, state=DISABLED).place(x=28,y=160)
             def fecharInfoClient():
                 info_client.destroy()
-
             okInfo_button = Button(info_client, text='Ok', command=fecharInfoClient, width=8, cursor="hand2").place(x=158,y=200)
             info_client.mainloop()
-        info_client_button = Button(client_list, text='Informações', command=verInfo_button, cursor="hand2").place(x=150,y=380)
+        info_client_button = Button(client_list, text='Informações', width=10, command=verInfo_button, cursor="hand2").place(x=120,y=380)
+        def deleteClient():
+            client_list.focus_force()
+            client_list.grab_set()
+            deletar = messagebox.askyesno('Confirme','Deseja deletar esse cliente?')
+            if deletar==True:        
+                client_list.focus_force()
+                client_list.grab_set()
+                global totalClientes
+                totalClientes-=1
+                totCl["text"] = totalClientes
+                indiceCliente = listaClientes.curselection()[0]
+                indiceDelete = lista_nome_cliente[indiceCliente]
+                listaClientes.delete(ACTIVE)
+                lista_nome_cliente.pop(indiceCliente)
+                lista_cpf_cliente.pop(indiceCliente)
+                lista_tel_cliente.pop(indiceCliente)
+                lista_email_cliente.pop(indiceCliente)
+                lista_endereco_cliente.pop(indiceCliente)
+                print(lista_nome_cliente, lista_cpf_cliente, lista_tel_cliente, lista_email_cliente, lista_endereco_cliente)
+        delete_client_button = Button(client_list, text='Deletar', width=10, command=deleteClient, cursor="hand2").place(x=22,y=380)    
         client_list.mainloop()
 def serviceScreen(): #janela para iniciar um novo serviço
     if totalClientes == 0:
@@ -218,16 +233,40 @@ def serviceScreen(): #janela para iniciar um novo serviço
             lista_datas_servicos.append(data)
             if valor==None:
                 messagebox.showwarning("Erro no Serviço!","Não podem haver campos vazios.")
-            print(valor,type(valor))
-
-            totalLucro = sum(lista_valores_servicos)       
-            print(totalLucro)
-
-            print(lista_valores_servicos)
             pendServi["text"] = totalServicosPendentes
+            servico = str(client_service.get('1.0', END))
+            lista_descricao_servico.append(servico)
             service_screen.destroy()
         newService_bt = Button(service_screen, text="Salvar", width=8, bd=3, command=salvarServiço).place(x=165,y=295)
         service_screen.mainloop()
+def concludedScreen(): #janela dos serviços concluidos
+    if len(lista_servicos_concluidos)==0:
+        messagebox.showwarning("Erro ao acessar!",'Não tem nenhum serviço concluido!')
+    else:
+        concludedService=Tk()
+        concludedService.title('Sistema Assistência Técnica')
+        concludedService.resizable(width=False, height=False)
+        concludedService_screen_width = concludedService.winfo_screenwidth()
+        concludedService_screen_height = concludedService.winfo_screenheight()
+        width_concludedService=350
+        height_concludedService=410
+        concludedService['bg'] = '#4141ff'
+        x_concludedService=(concludedService_screen_width/2) - (width_concludedService/2)
+        y_concludedService=(concludedService_screen_height/2) - (height_concludedService/2)
+        concludedService.geometry('%dx%d+%d+%d'%(width_concludedService,height_concludedService,x_concludedService,y_concludedService-40))
+        svccncld = Label(concludedService, text="Serviços Concluídos", font="Arial 18", bg='#4141ff', fg='white').place(x=62,y=10)
+        scrollbar = Scrollbar(concludedService)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        listaconcludedServices = Listbox(concludedService, font="Arial 14", height=13, width=27, cursor='hand2')
+        listaconcludedServices.place(x=18,y=55)
+        for cliente_add in lista_servicos_concluidos:
+            listaconcludedServices.insert(END, cliente_add)
+            listaconcludedServices.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=listaconcludedServices.yview)
+        def okconcludedService():
+            concludedService.destroy()
+        ok_concludedService = Button(concludedService, text='Ok', width=8, command=okconcludedService, cursor="hand2").place(x=258,y=372)
+        concludedService.mainloop()
 def infoScreen(): #informações do sistema
     info_screen=Toplevel()
     info_screen.title('Sistema Assistência.Técnica')
@@ -251,23 +290,8 @@ def infoScreen(): #informações do sistema
         info_screen.destroy()
     ok = Button(info_screen, text="Ok", width=8, bd=3, command=ok_info).place(x=190, y=235)
     info_screen.mainloop()
-def graficoLucros(): #grafico com o lucro total do sistema, de acordo com o mes 
-    global valor
-    global data
-    global lucroJaneiro 
-    global lucroFevereiro 
-    global lucroMarço 
-    global lucroAbril 
-    global lucroMaio
-    global lucroJunho
-    global lucroJulho 
-    global lucroAgosto
-    global lucroSetembro
-    global lucroOutubro
-    global lucroNovembro
-    global lucroDezembro
-    global meses
-    global vendas
+def graficoLucros(): #grafico com o lucro total do sistema, de acordo com o mes
+    global valor, data, lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
     if data == '':
         messagebox.showwarning("Erro!", "Nenhum mês foi cadastrado!")
     else:
@@ -303,53 +327,28 @@ def graficoLucros(): #grafico com o lucro total do sistema, de acordo com o mes
         plt.ylabel('Valores das vendas')
         plt.barh(meses, vendas, color='blue')
         plt.show()
-
 def limparGrafico():  # Função pra limpar os dados do gráfico
-    global lucroJaneiro 
-    global lucroFevereiro 
-    global lucroMarço 
-    global lucroAbril 
-    global lucroMaio
-    global lucroJunho
-    global lucroJulho 
-    global lucroAgosto
-    global lucroSetembro
-    global lucroOutubro
-    global lucroNovembro 
-    global lucroDezembro
-    global meses
-    global vendas
-    lucroJaneiro = 0
-    lucroFevereiro = 0
-    lucroMarço = 0
-    lucroAbril = 0
-    lucroMaio = 0
-    lucroJunho = 0
-    lucroJulho = 0
-    lucroAgosto = 0
-    lucroSetembro = 0
-    lucroOutubro = 0
-    lucroNovembro = 0
-    lucroDezembro = 0
+    global lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembrolucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
+    lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro = 0,0,0,0,0,0,0,0,0,0,0,0
     vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]   
     plt.clf()
-
 def menu(): #barra de menus, onde cada opção irá abrir uma janela
     menubar = Menu(main_screen) 
     clientes = Menu(menubar, tearoff = 0) 
     menubar.add_cascade(label ='Clientes', menu = clientes) 
     clientes.add_command(label ='Novo Cliente', command=clientScreen)
     clientes.add_separator()
-    clientes.add_command(label ='Lista de Clientes', command=lista_clientes)
+    clientes.add_command(label ='Lista de Clientes', command=listaClientScreen)
     serviços = Menu(menubar, tearoff = 0) 
     menubar.add_cascade(label ='Serviços', menu = serviços)
     serviços.add_command(label ='Novo Serviço', command=serviceScreen)
     serviços.add_separator()
     serviços.add_command(label ='Serviços Pendentes', command=print('rafa'))
-    serviços.add_command(label ='Serviços Concluídos', command=print('rafa'))
+    serviços.add_command(label ='Serviços Concluídos', command=concludedScreen)
     lucros = Menu(menubar, tearoff = 0)
     menubar.add_cascade(label = 'Lucros', menu = lucros)
     lucros.add_command(label ='Gráfico de Lucros', command=graficoLucros)
+    lucros.add_separator()
     lucros.add_command(label ='Limpar Gráfico', command=limparGrafico)
     info = Menu(menubar, tearoff = 0) 
     menubar.add_cascade(label ='Informações', menu = info)

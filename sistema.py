@@ -34,13 +34,13 @@ totPendServic = Label(main_screen, text="Total de Serviços Pendentes:", font="A
 totConcluServic = Label(main_screen, text="Total de Serviços Concluídos:", font="Arial 17", bg='#4843fd').place(x=142,y=210)
 totLucro = Label(main_screen, text="Lucro Total:", font="Arial 17", bg='#4843fd').place(x=230,y=290)
 totCl = Label(main_screen, text=totalClientes, font="Arial 17", bg='#4843fd')
-totCl.place(x=210,y=90)
+totCl.place(x=280,y=95)
 pendServi = Label(main_screen, text=totalServicosPendentes, font="Arial 17", bg='#4843fd')
-pendServi.place(x=210,y=180)
+pendServi.place(x=280,y=170)
 concluServi = Label(main_screen, text=totalServicosConcluidos, font="Arial 17", bg='#4843fd')
-concluServi.place(x=210,y=260)
+concluServi.place(x=280,y=250)
 totLucr = Label(main_screen, text=totalLucro, font="Arial 17", bg='#4843fd')
-totLucr.place(x=210,y=340)
+totLucr.place(x=280,y=330)
 #####################################################################################################################################
 def clientScreen(): #janela para cadastrar um novo cliente
     client_screen=Toplevel()
@@ -179,7 +179,6 @@ def listaClientScreen(): #janela que exibe uma lista com todos os clientes cadas
                 lista_tel_cliente.pop(indiceCliente)
                 lista_email_cliente.pop(indiceCliente)
                 lista_endereco_cliente.pop(indiceCliente)
-                print(lista_nome_cliente, lista_cpf_cliente, lista_tel_cliente, lista_email_cliente, lista_endereco_cliente)
         delete_client_button = Button(client_list, text='Deletar', width=10, command=deleteClient, cursor="hand2").place(x=22,y=380)    
         client_list.mainloop()
 def serviceScreen(): #janela para iniciar um novo serviço
@@ -201,7 +200,7 @@ def serviceScreen(): #janela para iniciar um novo serviço
         service = Label(service_screen, text="Descrição do Serviço:", font="Arial", bg='#6763fd', fg='white').place(x=38,y=46)
         client_service = scrolledtext.ScrolledText(service_screen, width=35, height=5, font="Arial") #descrição do problema
         client_service.place(x=38,y=70)
-        data = Label(service_screen, text="Data:", font="Arial", bg='#6763fd', fg='white').place(x=38,y=176)
+        data = Label(service_screen, text="Data: (XX/XX/20XX)", font="Arial", bg='#6763fd', fg='white').place(x=38,y=176)
         client_data = Entry(service_screen, font="Arial", bd=4, width=14) #coloca a data do dia
         client_data.place(x=38,y=200)
         value = Label(service_screen, text="Valor:", font="Arial", bg='#6763fd', fg='white').place(x=230,y=176)
@@ -240,16 +239,13 @@ def serviceScreen(): #janela para iniciar um novo serviço
         newService_bt = Button(service_screen, text="Salvar", width=8, bd=3, command=salvarServiço).place(x=165,y=295)
         service_screen.mainloop()
 def concludedScreen(): #janela dos serviços concluidos
-    if len(lista_servicos_concluidos)==0:
-        messagebox.showwarning("Erro ao acessar!",'Não tem nenhum serviço concluido!')
-    else:
         concludedService=Tk()
         concludedService.title('Sistema Assistência Técnica')
         concludedService.resizable(width=False, height=False)
         concludedService_screen_width = concludedService.winfo_screenwidth()
         concludedService_screen_height = concludedService.winfo_screenheight()
         width_concludedService=350
-        height_concludedService=410
+        height_concludedService=400
         concludedService['bg'] = '#4141ff'
         x_concludedService=(concludedService_screen_width/2) - (width_concludedService/2)
         y_concludedService=(concludedService_screen_height/2) - (height_concludedService/2)
@@ -265,8 +261,155 @@ def concludedScreen(): #janela dos serviços concluidos
         scrollbar.config(command=listaconcludedServices.yview)
         def okconcludedService():
             concludedService.destroy()
-        ok_concludedService = Button(concludedService, text='Ok', width=8, command=okconcludedService, cursor="hand2").place(x=258,y=372)
+        ok_concludedService = Button(concludedService, text='Ok', width=10, command=okconcludedService, cursor="hand2").place(x=180,y=368)
+        def infoServicConcluded():
+            infoConcluded=Toplevel()
+            infoConcluded.title('Sistema Assistência.Técnica')
+            infoConcluded.resizable(width=False, height=False)
+            infoConcluded_screen_width = infoConcluded.winfo_screenwidth()
+            infoConcluded_screen_height = infoConcluded.winfo_screenheight()
+            width_infoConcluded=400
+            height_infoConcluded=280
+            infoConcluded['bg']='#4141ff'
+            x_infoConcluded=(infoConcluded_screen_width/2) - (width_infoConcluded/2)
+            y_infoConcluded=(infoConcluded_screen_height/2) - (height_infoConcluded/2)
+            infoConcluded.geometry('%dx%d+%d+%d'%(width_infoConcluded,height_infoConcluded,x_infoConcluded,y_infoConcluded-40))
+            infoService = Label(infoConcluded, text="Informações do Serviço", font="Arial 18", bg='#4141ff', fg='white').place(x=75,y=10)       
+            rs = Label(infoConcluded, text="R$:", font="Arial", bg='#4141ff', fg='white').place(x=200,y=162)
+            clientesLabel = Label(infoConcluded, text='Cliente:', font="Arial", bg='#4141ff', fg='white').place(x=55,y=198)
+            indice = listaconcludedServices.curselection()[0]
+            indiceData = lista_datas_servicos[indice]
+            indiceValor = lista_valores_servicos[indice]
+            indiceCliente = lista_nome_cliente[indice]
+            indiceServico = lista_descricao_servico[indice]
+            data = StringVar() 
+            data.set(indiceData) 
+            client_data = Entry(infoConcluded, textvariable=data, font="Arial", bd=4, width=14, state=DISABLED).place(x=38,y=160)
+            valor = StringVar() 
+            valor.set(indiceValor)
+            client_value = Entry(infoConcluded, textvariable=valor, font="Arial", bd=4, width=14, state=DISABLED).place(x=230,y=160)
+            
+            service = StringVar()
+            service.set(indiceServico)
+            client_service = Entry(infoConcluded, width=35, textvariable=service, font="Arial", state=DISABLED).place(x=38,y=50)
+            
+            clientes = lista_nome_cliente[indice]
+            clientes = Combobox(infoConcluded, values=clientes, width=45, state='disabled')
+            if len(lista_nome_cliente) > 0:
+                clientes.current(0)
+            clientes.place(x=55, y=220)
+            def fecharConcludInfo():
+                infoConcluded.destroy()
+            okclbt = Button(infoConcluded, text='Ok', width=10, command=fecharConcludInfo, cursor='hand2').place(x=165,y=250)
+        def oksvcclbt():
+            infoConcluded.destroy()
+        infoConcluded_button = Button(concludedService, width=10, text='Informações', command=infoServicConcluded, cursor='hand2').place(x=80,y=368)
         concludedService.mainloop()
+def pendService():
+    servicosPendents_screen=Toplevel()
+    servicosPendents_screen.title('Sistema Assistência Técnica')
+    servicosPendents_screen.resizable(width=False, height=False)
+    servicosPendents_screen_screen_width = servicosPendents_screen.winfo_screenwidth()
+    servicosPendents_screen_screen_height = servicosPendents_screen.winfo_screenheight()
+    width_servicosPendents_screen=380
+    height_servicosPendents_screen=420
+    servicosPendents_screen['bg'] = '#4141ff'
+    x_servicosPendents_screen=(servicosPendents_screen_screen_width/2) - (width_servicosPendents_screen/2)
+    y_servicosPendents_screen=(servicosPendents_screen_screen_height/2) - (height_servicosPendents_screen/2)
+    servicosPendents_screen.geometry('%dx%d+%d+%d'%(width_servicosPendents_screen,height_servicosPendents_screen,x_servicosPendents_screen,y_servicosPendents_screen-40))
+    servlb = Label(servicosPendents_screen, text="Serviços Pendentes/Clientes", font="Arial 18", bg='#4141ff', fg='white').place(x=25,y=10)
+    scrollbar = Scrollbar(servicosPendents_screen)
+    scrollbar.pack(side=RIGHT, fill=Y)
+    listaPendentes = Listbox(servicosPendents_screen, font="Arial 14", height=14, width=30, cursor='hand2')
+    listaPendentes.place(x=15,y=55)
+    for pendent in lista_nome_cliente:
+        listaPendentes.insert(END, pendent)
+        listaPendentes.config(yscrollcommand=scrollbar.set)
+    scrollbar.config(command=listaPendentes.yview)
+    print(lista_servicos_pendentes,lista_datas_servicos,lista_descricao_servico,lista_valores_servicos)
+    def deletarServicoPend():
+        deletarPend = messagebox.askyesno('Confirme','Deseja deletar esse serviço?')
+        if deletarPend==True:
+            servicosPendents_screen.focus_force()
+            servicosPendents_screen.grab_set()
+            global totalServicosPendentes
+            totalServicosPendentes-=1
+            pendServi["text"] = totalServicosPendentes
+            indicePendente = listaPendentes.curselection()[0]
+            indiceDelete = lista_nome_cliente[indicePendente]
+            listaPendentes.delete(ACTIVE)
+            lista_servicos_pendentes.pop(indicePendente)
+            lista_valores_servicos.pop(indicePendente)
+            lista_datas_servicos.pop(indicePendente)
+            print(lista_datas_servicos,lista_descricao_servico,lista_valores_servicos)
+    def concluirServico():
+        concluir = messagebox.askyesno('Confirme','Deseja concluir esse serviço?')
+        if concluir==True:
+            servicosPendents_screen.focus_force()
+            servicosPendents_screen.grab_set()
+            global totalServicosPendentes
+            totalServicosPendentes-=1
+            global totalServicosConcluidos
+            totalServicosConcluidos+=1
+            concluServi["text"] = totalServicosConcluidos
+            indicePendente = listaPendentes.curselection()[0]
+            indiceLista = lista_nome_cliente[indicePendente]
+            listaPendentes.delete(ACTIVE)
+
+            lista_servicos_concluidos.append(lista_nome_cliente[indiceLista])
+            lista_servicos_pendentes.pop(indicePendente)
+            lista_valores_servicos.pop(indicePendente)
+            lista_datas_servicos.pop(indicePendente)
+            print(lista_datas_servicos,lista_descricao_servico,lista_valores_servicos)
+
+
+    def infoServicoPend():
+        infoPendent=Toplevel()
+        infoPendent.title('Sistema Assistência.Técnica')
+        infoPendent.resizable(width=False, height=False)
+        infoPendent_screen_width = infoPendent.winfo_screenwidth()
+        infoPendent_screen_height = infoPendent.winfo_screenheight()
+        width_infoPendent=400
+        height_infoPendent=280
+        infoPendent['bg']='#4141ff'
+        x_infoPendent=(infoPendent_screen_width/2) - (width_infoPendent/2)
+        y_infoPendent=(infoPendent_screen_height/2) - (height_infoPendent/2)
+        infoPendent.geometry('%dx%d+%d+%d'%(width_infoPendent,height_infoPendent,x_infoPendent,y_infoPendent-40))
+        infoService = Label(infoPendent, text="Informações do Serviço", font="Arial 18", bg='#4141ff', fg='white').place(x=75,y=10)       
+        rs = Label(infoPendent, text="R$:", font="Arial", bg='#4141ff', fg='white').place(x=200,y=162)
+        clientesLabel = Label(infoPendent, text='Cliente:', font="Arial", bg='#4141ff', fg='white').place(x=55,y=198)
+        indice = listaPendentes.curselection()[0]
+        indiceData = lista_datas_servicos[indice]
+        indiceValor = lista_valores_servicos[indice]
+        indiceCliente = lista_nome_cliente[indice]
+        indiceServico = lista_descricao_servico[indice]
+        data = StringVar() 
+        data.set(indiceData) 
+        client_data = Entry(infoPendent, textvariable=data, font="Arial", bd=4, width=14, state=DISABLED).place(x=38,y=160)
+        valor = StringVar() 
+        valor.set(indiceValor)
+        client_value = Entry(infoPendent, textvariable=valor, font="Arial", bd=4, width=14, state=DISABLED).place(x=230,y=160)
+            
+        service = StringVar()
+        service.set(indiceServico)
+        service = StringVar()
+        service.set(indiceServico)
+        client_service = Entry(infoConcluded, width=35, textvariable=service, font="Arial", state=DISABLED).place(x=38,y=50)
+        clientes = lista_nome_cliente[indice]
+        clientes = Combobox(infoPendent, values=clientes, width=45, state='disabled')
+        if len(lista_nome_cliente) > 0:
+            clientes.current(0)
+        clientes.place(x=55, y=220)
+        def fecharConcludInfo():
+            infoPendent.destroy()
+        okclbt = Button(infoPendent, text='Ok', width=10, command=fecharConcludInfo, cursor='hand2').place(x=165,y=250)
+    def oksvcbt():
+        servicosPendents_screen.destroy()
+    oksvc = Button(servicosPendents_screen, text='Ok', width=10, command=oksvcbt, cursor='hand2').place(x=278,y=385)
+    info_client_button = Button(servicosPendents_screen, width=10, text='Informações', command=infoServicoPend, cursor='hand2').place(x=188,y=385)#fazer tela informações
+    deletar_servico = Button(servicosPendents_screen, text='Deletar', width=10, command=deletarServicoPend, cursor='hand2').place(x=98,y=385)
+    concluir_servico = Button(servicosPendents_screen, text='Concluir', width=10, command=concluirServico, cursor='hand2').place(x=8,y=385)
+    servicosPendents_screen.mainloop()
 def infoScreen(): #informações do sistema
     info_screen=Toplevel()
     info_screen.title('Sistema Assistência.Técnica')
@@ -343,7 +486,7 @@ def menu(): #barra de menus, onde cada opção irá abrir uma janela
     menubar.add_cascade(label ='Serviços', menu = serviços)
     serviços.add_command(label ='Novo Serviço', command=serviceScreen)
     serviços.add_separator()
-    serviços.add_command(label ='Serviços Pendentes', command=print('rafa'))
+    serviços.add_command(label ='Serviços Pendentes', command=pendService)
     serviços.add_command(label ='Serviços Concluídos', command=concludedScreen)
     lucros = Menu(menubar, tearoff = 0)
     menubar.add_cascade(label = 'Lucros', menu = lucros)

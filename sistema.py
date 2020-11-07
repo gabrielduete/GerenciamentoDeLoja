@@ -28,9 +28,10 @@ totalClientes, totalServicosPendentes, totalServicosConcluidos = 0, 0, 0
 global totalLucro, valor, data
 totalLucro = 0
 data = ''
-global dataGrafico, valorGrafico, indiceValor
+global dataGrafico, indiceValor, LucroGrafico
 dataGrafico = ''
 indiceValor = 0
+LucroGrafico = 0
 global lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro
 lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 global meses, vendas
@@ -240,7 +241,7 @@ def listaClientScreen():  # janela que exibe uma lista com todos os clientes cad
 
         def deleteClient():
             try:
-                indiceCliente = listaClientes.curselection()[0]
+                indiceCliente = listaClientes.curselection()
             except IndexError:
                 messagebox.showwarning('Erro', 'Selecione um cliente')
                 client_list.focus_force()
@@ -398,9 +399,7 @@ def pendService():  # janela dos serviços pendentes
                     lista_descricao_servico.pop(indicePendente)
 
         def concluirServico():
-            global valorGrafico
-            global dataGrafico
-            global indiceValor
+            global valorGrafico, dataGrafico, indiceValor, LucroGrafico
             try:
                 indicePendente = listaPendentes.curselection()[0]
             except IndexError:
@@ -413,14 +412,22 @@ def pendService():  # janela dos serviços pendentes
                     global totalLucro
                     servicosPendents_screen.focus_force()
                     indiceGrafico = listaPendentes.curselection()[0]
-                    
+                       
                     indiceData = lista_datas_servicos[indiceGrafico]
                     indiceValor = lista_valores_servicos[indiceGrafico]
+                    LucroGrafico += indiceValor
+
+                    print(indiceValor)
+                    print(LucroGrafico)
                     
-                    totalLucro += indiceValor
-                    print(totalLucro)
-                    valorGrafico = indiceValor
                     dataGrafico = indiceData
+                    totalLucro += LucroGrafico
+                    
+                    LucroGrafico = 0
+                    indiceValor = 0 
+                     
+                    print(indiceValor)
+                    print(LucroGrafico)
 
                     totLucr = Label(main_screen, text=totalLucro, font="Arial 17", bg='#4843fd')
                     totLucr.place(x=280, y=330)
@@ -511,6 +518,57 @@ def pendService():  # janela dos serviços pendentes
         concluir_servico = Button(servicosPendents_screen, text='Concluir',
                                   width=10, command=concluirServico, cursor='hand2').place(x=8, y=385)
         servicosPendents_screen.mainloop()
+    
+def graficoLucros():  # grafico com o lucro total do sistema, de acordo com o mes
+    global indiceValor, LucroGrafico, dataGrafico, lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
+    if data == '':
+        messagebox.showwarning("Erro", "Nenhum mês foi cadastrado!")
+    else:
+        if dataGrafico[3] == '0' and dataGrafico[4] == '1':
+            lucroJaneiro += LucroGrafico
+        if dataGrafico[3] == '0' and dataGrafico[4] == '2':
+            lucroFevereiro += LucroGrafico
+        if dataGrafico[3] == '0' and dataGrafico[4] == '3':
+            lucroMarço += LucroGrafico
+        if dataGrafico[3] == '0' and dataGrafico[4] == '4':
+            lucroAbril += LucroGrafico
+        if dataGrafico[3] == '0' and dataGrafico[4] == '5':
+            lucroMaio += LucroGrafico
+        if dataGrafico[3] == '0' and dataGrafico[4] == '6':
+            lucroJunho += LucroGrafico
+        if dataGrafico[3] == '0' and dataGrafico[4] == '7':
+            lucroJulho += LucroGrafico
+        if dataGrafico[3] == '0' and dataGrafico[4] == '8':
+            lucroAgosto += LucroGrafico
+        if dataGrafico[3] == '0' and dataGrafico[4] == '9':
+            lucroSetembro += LucroGrafico
+        if dataGrafico[3] == '1' and dataGrafico[4] == '0':
+            lucroOutubro += LucroGrafico
+        if dataGrafico[3] == '1' and dataGrafico[4] == '1':
+            lucroNovembro += LucroGrafico
+        if dataGrafico[3] == '1' and dataGrafico[4] == '2':
+            lucroDezembro += LucroGrafico
+        valorGrafico = 0
+        meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
+                'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
+        vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho,
+                lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
+        plt.title('Gráfico de ganhos do ano')
+        plt.xlabel('Meses')
+        plt.ylabel('Valores das vendas')
+        plt.barh(meses, vendas, color='blue')
+        plt.show()
+
+def limparGrafico():  # Função pra limpar os dados do gráfico
+    global lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembrolucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
+    lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho,
+              lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
+    if sum(vendas) == 0:
+        messagebox.showwarning('Erro', 'Gráfico já está limpo!')
+    else:
+        plt.clf()
+        messagebox.showinfo('Gráfico', 'Gráfico limpo com sucesso!')
 
 
 def concludedScreen():  # janela dos serviços concluidos
@@ -610,59 +668,6 @@ def concludedScreen():  # janela dos serviços concluidos
                                       command=infoServicConcluded, cursor='hand2').place(x=80, y=368)
         concludedService.mainloop()
 
-def graficoLucros():  # grafico com o lucro total do sistema, de acordo com o mes
-    global indiceValor, valorGrafico, dataGrafico, lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
-    if data == '':
-        messagebox.showwarning("Erro", "Nenhum mês foi cadastrado!")
-    else:
-        if dataGrafico[3] == '0' and dataGrafico[4] == '1':
-            lucroJaneiro += valorGrafico
-        if dataGrafico[3] == '0' and dataGrafico[4] == '2':
-            lucroFevereiro += valorGrafico
-        if dataGrafico[3] == '0' and dataGrafico[4] == '3':
-            lucroMarço += valorGrafico
-        if dataGrafico[3] == '0' and dataGrafico[4] == '4':
-            lucroAbril += valorGrafico
-        if dataGrafico[3] == '0' and dataGrafico[4] == '5':
-            lucroMaio += valorGrafico
-        if dataGrafico[3] == '0' and dataGrafico[4] == '6':
-            lucroJunho += valorGrafico
-        if dataGrafico[3] == '0' and dataGrafico[4] == '7':
-            lucroJulho += valorGrafico
-        if dataGrafico[3] == '0' and dataGrafico[4] == '8':
-            lucroAgosto += valorGrafico
-        if dataGrafico[3] == '0' and dataGrafico[4] == '9':
-            lucroSetembro += valorGrafico
-        if dataGrafico[3] == '1' and dataGrafico[4] == '0':
-            lucroOutubro += valorGrafico
-        if dataGrafico[3] == '1' and dataGrafico[4] == '1':
-            lucroNovembro += valorGrafico
-        if dataGrafico[3] == '1' and dataGrafico[4] == '2':
-            lucroDezembro += valorGrafico
-        valorGrafico = 0
-        valor = 0
-        meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
-                'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
-        vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho,
-                lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
-        plt.title('Gráfico de ganhos do ano')
-        plt.xlabel('Meses')
-        plt.ylabel('Valores das vendas')
-        plt.barh(meses, vendas, color='blue')
-        plt.show()
-
-def limparGrafico():  # Função pra limpar os dados do gráfico
-    global lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembrolucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
-    lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho,
-              lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
-    if sum(vendas) == 0:
-        messagebox.showwarning('Erro', 'Gráfico já está limpo!')
-    else:
-        plt.clf()
-        messagebox.showinfo('Gráfico', 'Gráfico limpo com sucesso!')
-
-
 def menu():  # barra de menus, onde cada opção irá abrir uma janela
     menubar = Menu(main_screen)
     clientes = Menu(menubar, tearoff=0)
@@ -675,7 +680,7 @@ def menu():  # barra de menus, onde cada opção irá abrir uma janela
     serviços.add_command(label='Novo Serviço', command=serviceScreen)
     serviços.add_separator()
     serviços.add_command(label='Serviços Pendentes', command=pendService)
-    serviços.add_command(label='Serviços Concluídos', command=concludedScreen)
+    '''serviços.add_command(label='Serviços Concluídos', command=concludedScreen)'''
     lucros = Menu(menubar, tearoff=0)
     menubar.add_cascade(label='Lucros', menu=lucros)
     lucros.add_command(label='Gráfico de Lucros', command=graficoLucros)

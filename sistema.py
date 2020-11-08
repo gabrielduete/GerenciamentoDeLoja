@@ -21,6 +21,7 @@ main_screen.geometry('%dx%d+%d+%d' % (width_main_screen,height_main_screen, x_ma
 lista_nome_cliente, lista_cpf_cliente, lista_tel_cliente, lista_email_cliente, lista_endereco_cliente = [], [], [], [], []
 lista_valores_servicos, lista_datas_servicos, lista_descricao_servico = [], [], []
 lista_servicos_pendentes, lista_servicos_concluidos = [], []
+listaVETOR = []
 # total de clientes cadastrados, serviços pendentes e concluidos
 global totalClientes, totalServicosPendentes, totalServicosConcluidos
 totalClientes, totalServicosPendentes, totalServicosConcluidos = 0, 0, 0
@@ -28,6 +29,8 @@ totalClientes, totalServicosPendentes, totalServicosConcluidos = 0, 0, 0
 global totalLucro, valor, data
 totalLucro = 0
 data = ''
+global contar
+contar = -1 
 global dataGrafico, indiceValor, LucroGrafico
 dataGrafico = ''
 indiceValor = 0
@@ -38,7 +41,6 @@ global meses, vendas
 meses, vendas = [], []
 
 #####################################################################################################################################
-
 
 def infoScreen():  # informações do sistema
     info_screen = Toplevel()
@@ -184,7 +186,7 @@ def listaClientScreen():  # janela que exibe uma lista com todos os clientes cad
         def verInfo_button():  # janela que exibe as informações do cliente selecionado
             try:
                 indice = listaClientes.curselection()[0]
-            except IndexError:
+            except IndexError: 
                 messagebox.showwarning('Erro', 'Selecione um cliente')
                 client_list.focus_force()
             else:
@@ -341,7 +343,7 @@ def serviceScreen():  # janela para iniciar um novo serviço
             servico = str(client_service.get('1.0', END))
             lista_descricao_servico.append(servico)
             lista_servicos_pendentes.append(servico)
-            service_screen.destroy()
+            service_screen.destroy() 
         newService_bt = Button(service_screen, text="Salvar",
                                width=8, bd=3, command=salvarServiço).place(x=165, y=295)
         service_screen.mainloop()
@@ -372,6 +374,7 @@ def pendService():  # janela dos serviços pendentes
         listaPendentes = Listbox(
             servicosPendents_screen, font="Arial 14", height=14, width=30, cursor='hand2')
         listaPendentes.place(x=15, y=55)
+
         for pendent in lista_servicos_pendentes:
             listaPendentes.insert(END, pendent)
             listaPendentes.config(yscrollcommand=scrollbar.set)
@@ -399,124 +402,58 @@ def pendService():  # janela dos serviços pendentes
                     lista_descricao_servico.pop(indicePendente)
 
         def concluirServico():
-            global valorGrafico, dataGrafico, indiceValor, LucroGrafico
+            global valorGrafico, dataGrafico, indiceValor, LucroGrafico, contar, listaVETOR
+            LucroGrafico = 0
+            indiceValor = 0
             try:
                 indicePendente = listaPendentes.curselection()[0]
             except IndexError:
                 messagebox.showwarning('Erro', 'Selecione um item')
                 servicosPendents_screen.focus_force()
-            else:
-                concluir = messagebox.askyesno(
-                    'Confirme', 'Deseja concluir esse serviço?')
-                if concluir == True:
-                    global totalLucro
-                    servicosPendents_screen.focus_force()
-                    indiceGrafico = listaPendentes.curselection()[0]
-                       
-                    indiceData = lista_datas_servicos[indiceGrafico]
-                    indiceValor = lista_valores_servicos[indiceGrafico]
-                    LucroGrafico += indiceValor
+            concluir = messagebox.askyesno(
+                'Confirme', 'Deseja concluir esse serviço?')
+            if concluir == True:
+                global totalLucro
+                contar += 1
 
-                    print(indiceValor)
-                    print(LucroGrafico)
-                    
-                    dataGrafico = indiceData
-                    totalLucro += LucroGrafico
-                    
-                    LucroGrafico = 0
-                    indiceValor = 0 
-                     
-                    print(indiceValor)
-                    print(LucroGrafico)
-
-                    totLucr = Label(main_screen, text=totalLucro, font="Arial 17", bg='#4843fd')
-                    totLucr.place(x=280, y=330)
-    
-                    global totalServicosPendentes
-                    totalServicosPendentes -= 1
-                    pendServi["text"] = totalServicosPendentes
-                    global totalServicosConcluidos
-                    totalServicosConcluidos += 1
-                    
-                    
-                    concluServi["text"] = totalServicosConcluidos
-                    indicePendente = listaPendentes.curselection()[0]
-                    listaPendentes.delete(ACTIVE)
-                    servicoConcluido = lista_descricao_servico[indicePendente]
-                    lista_servicos_concluidos.append(servicoConcluido)
-                    lista_servicos_pendentes.pop(indicePendente)
-                    messagebox.showinfo('Sucesso', 'Serviço Concluído!')
-                    servicosPendents_screen.focus_force()
-
-        def infoServicoPend():
-            try:
-                indice = listaPendentes.curselection()[0]
-            except IndexError:
-                messagebox.showwarning('Erro', 'Selecione um item')
                 servicosPendents_screen.focus_force()
-            else:
-                infoPendent = Toplevel()
-                infoPendent.title('Sistema Assistência.Técnica')
-                infoPendent.resizable(width=False, height=False)
-                infoPendent_screen_width = infoPendent.winfo_screenwidth()
-                infoPendent_screen_height = infoPendent.winfo_screenheight()
-                width_infoPendent = 400
-                height_infoPendent = 240
-                infoPendent['bg'] = '#4141ff'
-                x_infoPendent = (infoPendent_screen_width/2) - \
-                    (width_infoPendent/2)
-                y_infoPendent = (infoPendent_screen_height /
-                                 2) - (height_infoPendent/2)
-                infoPendent.geometry(
-                    '%dx%d+%d+%d' % (width_infoPendent, height_infoPendent, x_infoPendent, y_infoPendent-40))
-                infoService = Label(infoPendent, text="Informações do Serviço",
-                                    font="Arial 18", bg='#4141ff', fg='white').place(x=75, y=10)
-                rs = Label(infoPendent, text="R$:", font="Arial",
-                           bg='#4141ff', fg='white').place(x=200, y=92)
-                clientesLabel = Label(
-                    infoPendent, text='Cliente:', font="Arial", bg='#4141ff', fg='white').place(x=55, y=130)
-                indiceData = lista_datas_servicos[indice]
-                indiceValor = lista_valores_servicos[indice]
-                indiceCliente = lista_nome_cliente[indice]
-                indiceServico = lista_descricao_servico[indice]
-                data = StringVar()
-                data.set(indiceData)
-                client_data = Entry(infoPendent, textvariable=data, font="Arial",
-                                    bd=4, width=14, state=DISABLED).place(x=38, y=90)
-                valor = StringVar()
-                valor.set(indiceValor)
-                client_value = Entry(infoPendent, textvariable=valor, font="Arial",
-                                     bd=4, width=14, state=DISABLED).place(x=230, y=90)
-                service = StringVar()
-                service.set(indiceServico)
-                client_service = Entry(infoPendent, width=38, textvariable=service,
-                                       bd=4, font="Arial", state=DISABLED).place(x=24, y=50)
-                clientes = lista_nome_cliente[indice]
-                clientes = Combobox(
-                    infoPendent, values=clientes, width=45, state='disabled')
-                if len(lista_nome_cliente) > 0:
-                    clientes.current(0)
-                clientes.place(x=55, y=152)
+                indiceGrafico = listaPendentes.index(contar)
 
-                def fecharPendInfo():
-                    infoPendent.destroy()
-                okclbt = Button(infoPendent, text='Ok', width=10,
-                                command=fecharPendInfo, cursor='hand2').place(x=160, y=190)
+                LucroGrafico = 0
+                indiceValor = 0
+                indiceData = lista_datas_servicos[indiceGrafico]
+                indiceValor = lista_valores_servicos[indiceGrafico]
 
-                def oksvcclbt():
-                    infoPendent.destroy()
-                infoPendent.mainloop()
+                LucroGrafico += indiceValor
+                dataGrafico = indiceData
 
+                totalLucro += LucroGrafico                
+
+                totLucr = Label(main_screen, text=totalLucro, font="Arial 17", bg='#4843fd')
+                totLucr.place(x=280, y=330)
+
+                global totalServicosPendentes
+                totalServicosPendentes -= 1
+                pendServi["text"] = totalServicosPendentes
+                global totalServicosConcluidos
+                totalServicosConcluidos += 1
+            
+                concluServi["text"] = totalServicosConcluidos
+                indicePendente = listaPendentes.curselection()[0]
+                listaPendentes.delete(ACTIVE)
+                servicoConcluido = lista_descricao_servico[indicePendente]
+                lista_servicos_concluidos.append(servicoConcluido)
+                lista_servicos_pendentes.pop(indicePendente)
+                messagebox.showinfo('Sucesso', 'Serviço Concluído!')
+                servicosPendents_screen.focus_force()
+            
         def oksvcbt():
             servicosPendents_screen.destroy()
-        oksvc = Button(servicosPendents_screen, text='Ok', width=10,
-                       command=oksvcbt, cursor='hand2').place(x=278, y=385)
-        info_client_button = Button(servicosPendents_screen, width=10, text='Informações',
-                                    command=infoServicoPend, cursor='hand2').place(x=188, y=385)  # fazer tela informações
+        oksvc = Button(servicosPendents_screen, text='Ok', width=10,command=oksvcbt, cursor='hand2').place(x=278, y=385)
         deletar_servico = Button(servicosPendents_screen, text='Deletar', width=10,
-                                 command=deletarServicoPend, cursor='hand2').place(x=98, y=385)
+                                 command=deletarServicoPend, cursor='hand2').place(x=190, y=385)
         concluir_servico = Button(servicosPendents_screen, text='Concluir',
-                                  width=10, command=concluirServico, cursor='hand2').place(x=8, y=385)
+                                  width=10, command=concluirServico, cursor='hand2').place(x=100, y=385)
         servicosPendents_screen.mainloop()
     
 def graficoLucros():  # grafico com o lucro total do sistema, de acordo com o mes
@@ -549,6 +486,7 @@ def graficoLucros():  # grafico com o lucro total do sistema, de acordo com o me
         if dataGrafico[3] == '1' and dataGrafico[4] == '2':
             lucroDezembro += LucroGrafico
         valorGrafico = 0
+        LucroGrafico = 0
         meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
                 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
         vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho,
@@ -562,13 +500,12 @@ def graficoLucros():  # grafico com o lucro total do sistema, de acordo com o me
 def limparGrafico():  # Função pra limpar os dados do gráfico
     global lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembrolucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
     lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    
     vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho,
               lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
-    if sum(vendas) == 0:
-        messagebox.showwarning('Erro', 'Gráfico já está limpo!')
-    else:
-        plt.clf()
-        messagebox.showinfo('Gráfico', 'Gráfico limpo com sucesso!')
+   
+    plt.clf()
+    messagebox.showinfo('Gráfico', 'Gráfico limpo com sucesso!')
 
 
 def concludedScreen():  # janela dos serviços concluidos
@@ -680,7 +617,7 @@ def menu():  # barra de menus, onde cada opção irá abrir uma janela
     serviços.add_command(label='Novo Serviço', command=serviceScreen)
     serviços.add_separator()
     serviços.add_command(label='Serviços Pendentes', command=pendService)
-    '''serviços.add_command(label='Serviços Concluídos', command=concludedScreen)'''
+    serviços.add_command(label='Serviços Concluídos', command=concludedScreen)
     lucros = Menu(menubar, tearoff=0)
     menubar.add_cascade(label='Lucros', menu=lucros)
     lucros.add_command(label='Gráfico de Lucros', command=graficoLucros)

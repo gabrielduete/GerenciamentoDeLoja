@@ -1,9 +1,15 @@
+#Bibliotecas
+
+#TKINTER para interface
 from tkinter import *
 from tkinter import scrolledtext
 from tkinter import messagebox
 from tkinter.ttk import Combobox
+
+#Matplotlib para o gráfico de lucro
 import matplotlib.pyplot as plt
 
+#Configurações da tela do programa
 main_screen = Tk()
 main_screen.title('Sistema Assistência.Técnica')
 main_screen.resizable(width=False, height=False)
@@ -16,21 +22,28 @@ x_main_screen = (main_screen_screen_width/2) - (width_main_screen/2)
 y_main_screen = (main_screen_screen_height/2) - (height_main_screen/2)
 main_screen.geometry('%dx%d+%d+%d' % (width_main_screen,height_main_screen, x_main_screen, y_main_screen-40))
 
-##################Listas e variáveis que armazenam as informações do cliente/serviços/lucros e etc...##############################
+################## Listas e variáveis que armazenam as informações do cliente/serviços/lucros e etc...##############################
 
+#Listas 
 lista_nome_cliente, lista_cpf_cliente, lista_tel_cliente, lista_email_cliente, lista_endereco_cliente = [], [], [], [], []
 lista_valores_servicos, lista_datas_servicos, lista_descricao_servico = [], [], []
 lista_servicos_pendentes, lista_servicos_concluidos = [], []
 listaVETOR = []
-# total de clientes cadastrados, serviços pendentes e concluidos
+
+# Total de clientes cadastrados, serviços pendentes e concluidos
 global totalClientes, totalServicosPendentes, totalServicosConcluidos
 totalClientes, totalServicosPendentes, totalServicosConcluidos = 0, 0, 0
-# lucro total obtido, valor do serviço, e data do serviço
+
+# Lucro total obtido, valor do serviço, e data do serviço
 global totalLucro, valor, data
 totalLucro = 0
 data = ''
+
+#Variável para pecorrer a lista na função de concluir serviço
 global contar
-contar = -1 
+contar = -1
+
+#Variávels pro Gráfico de Lucro
 global dataGrafico, indiceValor, LucroGrafico
 dataGrafico = ''
 indiceValor = 0
@@ -42,7 +55,8 @@ meses, vendas = [], []
 
 #####################################################################################################################################
 
-def infoScreen():  # informações do sistema
+#Função que mostra a tela de informações do sistema
+def infoScreen():  
     info_screen = Toplevel()
     info_screen.title('Sistema Assistência.Técnica')
     info_screen.resizable(width=False, height=False)
@@ -120,7 +134,8 @@ def clientScreen():  # janela para cadastrar um novo cliente
                           bd=4, width=35)  # endereço do cliente
     client_adress.place(x=38, y=235)
 
-    def client_button_save():  # janela para cadastrar um novo cliente
+     # JANELA PARA CADASTRO DO NOVO CLIENTE
+    def client_button_save(): 
         name = str(client_name.get())
         cpf = str(client_cpf.get())
         tel = str(client_tel.get())
@@ -148,7 +163,8 @@ def clientScreen():  # janela para cadastrar um novo cliente
     client_screen.mainloop()
 
 
-def listaClientScreen():  # janela que exibe uma lista com todos os clientes cadastrados
+ # JANELA QUE EXIBE A LISTA DE TODOS OS CLIENTES CADASTRADOS
+def listaClientScreen(): 
     global totalClientes
     if len(lista_nome_cliente) == 0:
         messagebox.showwarning(
@@ -183,7 +199,8 @@ def listaClientScreen():  # janela que exibe uma lista com todos os clientes cad
         ok_client_list = Button(client_list, text='Ok', width=10,
                                 command=ok_client_list_button, cursor="hand2").place(x=218, y=380)
 
-        def verInfo_button():  # janela que exibe as informações do cliente selecionado
+        #JANELA QUE EXIBE AS INFORMAÇÕES DOS CLIENTES SELECIONADOS
+        def verInfo_button(): 
             try:
                 indice = listaClientes.curselection()[0]
             except IndexError: 
@@ -270,8 +287,9 @@ def listaClientScreen():  # janela que exibe uma lista com todos os clientes cad
             client_list, text='Deletar', width=10, command=deleteClient, cursor="hand2").place(x=22, y=380)
         client_list.mainloop()
 
+#JANELA PARA INICIAR UM NOVO SERVIÇO
 
-def serviceScreen():  # janela para iniciar um novo serviço
+def serviceScreen():
     if len(lista_nome_cliente) == 0:
         messagebox.showwarning(
             "Erro ao acessar!", 'Cadastre um cliente para iniciar um serviço!')
@@ -295,18 +313,18 @@ def serviceScreen():  # janela para iniciar um novo serviço
         service = Label(service_screen, text="Descrição do Serviço:",
                         font="Arial", bg='#6763fd', fg='white').place(x=38, y=46)
         client_service = scrolledtext.ScrolledText(
-            service_screen, width=35, height=5, font="Arial")  # descrição do problema
+            service_screen, width=35, height=5, font="Arial")  # DESCRIÇÃO DO PROBLEMA
         client_service.place(x=38, y=70)
         data = Label(service_screen, text="Data: (XX/XX/20XX)",
                      font="Arial", bg='#6763fd', fg='white').place(x=38, y=176)
         client_data = Entry(service_screen, font="Arial",
-                            bd=4, width=14)  # coloca a data do dia
+                            bd=4, width=14)  # COLOCA A DATA DO DIA
         client_data.place(x=38, y=200)
         value = Label(service_screen, text="Valor:", font="Arial",
                       bg='#6763fd', fg='white').place(x=230, y=176)
         rs = Label(service_screen, text="R$:", font="Arial",
                    bg='#6763fd').place(x=200, y=202)
-        # valor pra solucionar o problema
+        # VALOR PARA SOLUCIONAR O PROBLEMA
         client_value = Entry(service_screen, font="Arial", bd=4, width=14)
         client_value.place(x=230, y=200)
         client = Label(service_screen, text="Cliente:", font="Arial",
@@ -348,8 +366,9 @@ def serviceScreen():  # janela para iniciar um novo serviço
                                width=8, bd=3, command=salvarServiço).place(x=165, y=295)
         service_screen.mainloop()
 
+# FUNÇÃO PARA MOSTRAR A JANELA DOS SERVIÇOS PENDENTES 
 
-def pendService():  # janela dos serviços pendentes
+def pendService():
     if len(lista_servicos_pendentes) == 0:
         messagebox.showwarning("Erro", "Nenhum serviço está pendente!")
     else:
@@ -380,6 +399,8 @@ def pendService():  # janela dos serviços pendentes
             listaPendentes.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=listaPendentes.yview)
 
+        # FUNÇÃO PARA DELETAR O SERVIÇO
+
         def deletarServicoPend():
             try:
                 indicePendente = listaPendentes.curselection()[0]
@@ -401,10 +422,11 @@ def pendService():  # janela dos serviços pendentes
                     lista_datas_servicos.pop(indicePendente)
                     lista_descricao_servico.pop(indicePendente)
 
+        #FUNÇÃO PARA CONCLUIR O SERVIÇO
+
         def concluirServico():
             global valorGrafico, dataGrafico, indiceValor, LucroGrafico, contar, listaVETOR
-            LucroGrafico = 0
-            indiceValor = 0
+
             try:
                 indicePendente = listaPendentes.curselection()[0]
             except IndexError:
@@ -413,22 +435,22 @@ def pendService():  # janela dos serviços pendentes
             concluir = messagebox.askyesno(
                 'Confirme', 'Deseja concluir esse serviço?')
             if concluir == True:
-                global totalLucro
+                global totalLucro 
                 contar += 1
 
                 servicosPendents_screen.focus_force()
                 indiceGrafico = listaPendentes.index(contar)
 
-                LucroGrafico = 0
-                indiceValor = 0
+                #Pegando valores para incerir no gráfico
                 indiceData = lista_datas_servicos[indiceGrafico]
                 indiceValor = lista_valores_servicos[indiceGrafico]
 
                 LucroGrafico += indiceValor
                 dataGrafico = indiceData
+                
 
+                #Incrementando o valor no Lucro Total e exibindo na tela principal
                 totalLucro += LucroGrafico                
-
                 totLucr = Label(main_screen, text=totalLucro, font="Arial 17", bg='#4843fd')
                 totLucr.place(x=280, y=330)
 
@@ -456,7 +478,9 @@ def pendService():  # janela dos serviços pendentes
                                   width=10, command=concluirServico, cursor='hand2').place(x=100, y=385)
         servicosPendents_screen.mainloop()
     
-def graficoLucros():  # grafico com o lucro total do sistema, de acordo com o mes
+# FUNÇÃO QUE GERA O GRÁFICO DE LUCRO DE CADA MÊS
+
+def graficoLucros():  
     global indiceValor, LucroGrafico, dataGrafico, lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
     if data == '':
         messagebox.showwarning("Erro", "Nenhum mês foi cadastrado!")
@@ -485,7 +509,6 @@ def graficoLucros():  # grafico com o lucro total do sistema, de acordo com o me
             lucroNovembro += LucroGrafico
         if dataGrafico[3] == '1' and dataGrafico[4] == '2':
             lucroDezembro += LucroGrafico
-        valorGrafico = 0
         LucroGrafico = 0
         meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO',
                 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
@@ -497,18 +520,23 @@ def graficoLucros():  # grafico com o lucro total do sistema, de acordo com o me
         plt.barh(meses, vendas, color='blue')
         plt.show()
 
-def limparGrafico():  # Função pra limpar os dados do gráfico
+# FUNÇÃO PARA LIMPAR OS DADOS DO GRÁFICO
+
+def limparGrafico():
     global lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembrolucroOutubro, lucroNovembro, lucroDezembro, meses, vendas
-    lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    
-    vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho,
-              lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
-   
-    plt.clf()
-    messagebox.showinfo('Gráfico', 'Gráfico limpo com sucesso!')
 
+    if sum(vendas) == 0:
+        messagebox.showwarning('Erro!', 'Gráfico já está limpo!')
+    else:
+        lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho, lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        
+        vendas = [lucroJaneiro, lucroFevereiro, lucroMarço, lucroAbril, lucroMaio, lucroJunho,
+                lucroJulho, lucroAgosto, lucroSetembro, lucroOutubro, lucroNovembro, lucroDezembro]
+        plt.clf()
+        messagebox.showinfo('Gráfico', 'Gráfico limpo com sucesso!')
 
-def concludedScreen():  # janela dos serviços concluidos
+# JANELA DOS SERVIÇOS CONCLUIDOS
+def concludedScreen():  
     if len(lista_servicos_concluidos) == 0:
         messagebox.showwarning("Erro", "Nenhum serviço foi concluído!")
     else:
@@ -543,6 +571,7 @@ def concludedScreen():  # janela dos serviços concluidos
         ok_concludedService = Button(concludedService, text='Ok', width=10,
                                      command=okconcludedService, cursor="hand2").place(x=180, y=368)
 
+        #Função que mostra as informações dos serviços concluidos
         def infoServicConcluded():
             try:
                 indice = listaconcludedServices.curselection()[0]
@@ -605,7 +634,9 @@ def concludedScreen():  # janela dos serviços concluidos
                                       command=infoServicConcluded, cursor='hand2').place(x=80, y=368)
         concludedService.mainloop()
 
-def menu():  # barra de menus, onde cada opção irá abrir uma janela
+# BARRA DE MENUS, ONDE CADA OPÇÃO IRÁ ABRIR UMA JANELA
+def menu():
+
     menubar = Menu(main_screen)
     clientes = Menu(menubar, tearoff=0)
     menubar.add_cascade(label='Clientes', menu=clientes)
@@ -629,7 +660,7 @@ def menu():  # barra de menus, onde cada opção irá abrir uma janela
     main_screen.config(menu=menubar)
 
 
-###################################Informações exibidas na tela principal############################################################
+################################### Informações Exibidas na Tela Principal ############################################################
 
 labelsist = Label(main_screen, text="Sistema de Gerenciamento de Assistência Técnica ",
                   font="Arial 18 bold", bg='#4843fd').place(x=10, y=10)
@@ -650,5 +681,6 @@ concluServi = Label(main_screen, text=totalServicosConcluidos,
                     font="Arial 17", bg='#4843fd')
 concluServi.place(x=280, y=250)
 
+#Iniciando....
 menu()
 main_screen.mainloop()
